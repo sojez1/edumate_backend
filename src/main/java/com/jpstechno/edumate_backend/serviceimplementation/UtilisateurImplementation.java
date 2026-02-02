@@ -10,6 +10,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.jpstechno.edumate_backend.AppEvents.NouveauUtilisateurEvent;
 import com.jpstechno.edumate_backend.modeles.Utilisateurs;
+import com.jpstechno.edumate_backend.modeles.enumerations.RoleUtilisateurs;
 import com.jpstechno.edumate_backend.repositories.UtilisateurRepo;
 import com.jpstechno.edumate_backend.services.UtilisateurService;
 
@@ -82,6 +83,36 @@ public class UtilisateurImplementation implements UtilisateurService {
     @Override
     public void validerEmail(String token) {
 
+    }
+
+    @Override
+    public void AjouterRole(RoleUtilisateurs role) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'AjouterRole'");
+    }
+
+    @Override
+    public Utilisateurs getUtilisateurByEmail(String email) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getUtilisateurByEmail'");
+    }
+
+    @Override
+    public Utilisateurs getUtilisateurById(Long id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getUtilisateurById'");
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'existsByEmail'");
+    }
+
+    @Override
+    public boolean hasRole(Utilisateurs utilisateur, RoleUtilisateurs role) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'hasRole'");
     }
 
 }

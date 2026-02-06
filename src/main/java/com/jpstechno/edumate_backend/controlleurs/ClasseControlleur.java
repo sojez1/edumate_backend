@@ -1,5 +1,7 @@
 package com.jpstechno.edumate_backend.controlleurs;
 
+import java.util.List;
+
 import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,8 +32,8 @@ public class ClasseControlleur {
     }
 
     @GetMapping("/listerClasses")
-    public ResponseEntity<Iterable<Classes>> listerClasses() {
-        Iterable<Classes> classes = classeImplementation.getAllClasses();
+    public ResponseEntity<List<Classes>> listerClasses() {
+        List<Classes> classes = classeImplementation.getAllClasses();
         return ResponseEntity.ok(classes);
     }
 

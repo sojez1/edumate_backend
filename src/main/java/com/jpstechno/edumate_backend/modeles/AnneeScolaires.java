@@ -15,14 +15,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Matieres {
+public class AnneeScolaires {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NaturalId(mutable = true)
-    @Column(unique = true, nullable = false, length = 50)
-    private String nomMatiere; // nom de la matiere (ex: Mathématiques, Physique, etc.)
+    @Column(unique = true, nullable = false, length = 9)
+    private String anneeScolaire; // format: "2023-2024"
+
+    private boolean active = false; // indique si l'année scolaire est active
 
 }

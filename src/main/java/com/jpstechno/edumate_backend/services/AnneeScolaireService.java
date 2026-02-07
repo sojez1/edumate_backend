@@ -13,4 +13,6 @@ public interface AnneeScolaireService {
 
     AnneeScolaires modifierAnneeScolaire(Long id, String nouvelleAnneeScolaire);
 
+    AnneeScolaires activerOuDesactiverAnneeScolaire(Long id);
+
 }

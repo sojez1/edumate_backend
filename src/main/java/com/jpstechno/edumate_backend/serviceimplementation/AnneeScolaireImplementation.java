@@ -43,4 +43,14 @@ public class AnneeScolaireImplementation implements AnneeScolaireService {
         throw new RuntimeException("Annee scolaire non trouvée");
     }
 
+    @Override
+    public AnneeScolaires activerOuDesactiverAnneeScolaire(Long id) {
+        AnneeScolaires anneeScolaire = anneeScolaireRepo.findById(id).orElse(null);
+        if (anneeScolaire != null) {
+            anneeScolaire.setActive(!anneeScolaire.isActive());
+            return anneeScolaireRepo.save(anneeScolaire);
+        }
+        throw new RuntimeException("Annee scolaire non trouvée");
+    }
+
 }

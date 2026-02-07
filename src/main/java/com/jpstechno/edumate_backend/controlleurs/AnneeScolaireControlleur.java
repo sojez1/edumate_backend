@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,4 +37,15 @@ public class AnneeScolaireControlleur {
         return ResponseEntity.ok(annees);
     }
 
+    @PostMapping("/supprimer/{id}")
+    public ResponseEntity<Void> supprimerAnneeScolaire(@PathVariable Long id) {
+        anneeScolaireService.supprimerAnneeScolaire(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/changerStatut/{id}")
+    public ResponseEntity<AnneeScolaires> activerOuDesactiverAnneeScolaire(@PathVariable Long id) {
+        AnneeScolaires anneeScolaire = anneeScolaireService.activerOuDesactiverAnneeScolaire(id);
+        return ResponseEntity.ok(anneeScolaire);
+    }
 }

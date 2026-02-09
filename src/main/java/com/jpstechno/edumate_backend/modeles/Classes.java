@@ -1,5 +1,7 @@
 package com.jpstechno.edumate_backend.modeles;
 
+import java.util.List;
+
 import org.hibernate.annotations.NaturalId;
 
 import com.jpstechno.edumate_backend.modeles.enumerations.OrdreEnseignements;
@@ -11,6 +13,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,4 +37,8 @@ public class Classes {
 
     @Enumerated(EnumType.STRING)
     private OrdreEnseignements ordreEnseignement; // maternelle, primaire, secondaire, superieur
+
+    @OneToMany(mappedBy = "classeActuelle")
+    private List<CandidatAdmission> candidatsAdmission; // liste de ceux qui ont fait demande d'admission dans cette
+                                                        // classe
 }

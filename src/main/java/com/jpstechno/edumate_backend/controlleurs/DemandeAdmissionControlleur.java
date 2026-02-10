@@ -19,11 +19,19 @@ public class DemandeAdmissionControlleur {
 
     private final DemandeAdmissionService demandeAdmissionService;
 
-    @PostMapping("/soumettre")
-    public ResponseEntity<DemandeAdmissions> soumettreDemandeAdmission(
-            @RequestBody DemandeAdmissions demandeAdmission) {
-        DemandeAdmissions nouvelleDemande = demandeAdmissionService.creerDemandeAdmission(demandeAdmission);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nouvelleDemande);
-    }
+    /*
+     * @PostMapping("/soumettre")
+     * public ResponseEntity<String> soumettreDemandeAdmission(
+     * 
+     * @RequestBody DemandeAdmissions demandeAdmission) {
+     * DemandeAdmissions nouvelleDemande =
+     * demandeAdmissionService.creerDemandeAdmission(demandeAdmission);
+     * String message =
+     * String.format("Votre demande d'admission est cree sous le numero %d",
+     * nouvelleDemande.getNumeroDemandeAdmission());
+     * return ResponseEntity.status(HttpStatus.CREATED).body(message);
+     * }
+     * 
+     */
 
 }

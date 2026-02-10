@@ -1,16 +1,14 @@
 package com.jpstechno.edumate_backend.services;
 
+import java.time.LocalDate;
 import java.util.List;
 
-import com.jpstechno.edumate_backend.modeles.CandidatAdmission;
-import com.jpstechno.edumate_backend.modeles.Classes;
 import com.jpstechno.edumate_backend.modeles.DemandeAdmissions;
 
 public interface DemandeAdmissionService {
 
-    DemandeAdmissions creerDemandeAdmission(DemandeAdmissions demandeAdmission);
-
-    DemandeAdmissions creerDemandeAdmission(CandidatAdmission candidat, long idClasse, long idAnneeScolaire);
+    DemandeAdmissions creerDemandeAdmission(String anneeScolaire, String classeSouhaitee, String nom,
+            String prenom, LocalDate dateNaissance, String email, String telephone, String adresse);
 
     List<DemandeAdmissions> listerDemandesAdmissionsParAnnee();
 

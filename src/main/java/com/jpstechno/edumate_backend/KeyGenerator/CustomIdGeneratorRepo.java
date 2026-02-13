@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Lock;
 
 import jakarta.persistence.LockModeType;
 
-public interface PrimaryKeyGeneratorRepo extends JpaRepository<CustomIdGenerator, CustomIdEmbeddableKey> {
+public interface CustomIdGeneratorRepo extends JpaRepository<CustomIdGenerator, CustomIdEmbeddableKey> {
 
     @Lock(LockModeType.PESSIMISTIC_WRITE) // gestion acces concurente (empeche deux acces simultanee en ecriture)
     Optional<CustomIdGenerator> findById(CustomIdEmbeddableKey id);

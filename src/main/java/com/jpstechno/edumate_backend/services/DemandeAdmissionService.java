@@ -3,12 +3,12 @@ package com.jpstechno.edumate_backend.services;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.jpstechno.edumate_backend.modeles.DemandeAdmissionForm;
 import com.jpstechno.edumate_backend.modeles.DemandeAdmissions;
 
 public interface DemandeAdmissionService {
 
-    DemandeAdmissions creerDemandeAdmission(String anneeScolaire, String classeSouhaitee, String nom,
-            String prenom, LocalDate dateNaissance, String email, String telephone, String adresse);
+    DemandeAdmissions creerDemandeAdmission(DemandeAdmissionForm admissionData);
 
     List<DemandeAdmissions> listerDemandesAdmissionsParAnnee();
 

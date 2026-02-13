@@ -6,7 +6,7 @@ import com.jpstechno.edumate_backend.modeles.enumerations.RoleUtilisateurs;
 
 public class Eleves implements UtilisateursType {
 
-    private List<Parents> parents;
+    // private List<Parents> parents;
 
     @Override
     public RoleUtilisateurs getTypeUtilisateur() {

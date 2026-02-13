@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class CustomIdGeneratorService {
 
-    private final PrimaryKeyGeneratorRepo generateurRepo;
+    private final CustomIdGeneratorRepo generateurRepo;
 
     public String nextId(String prefixe) {
 
@@ -31,6 +31,7 @@ public class CustomIdGeneratorService {
 
         long nextSequence = generatedKey.getValue() + 1;
         generatedKey.setValue(nextSequence);
+        generateurRepo.save(generatedKey);
 
         return String.format("%s%02d%09d", prefixe, annee, nextSequence);
 

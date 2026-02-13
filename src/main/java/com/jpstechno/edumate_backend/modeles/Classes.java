@@ -38,7 +38,4 @@ public class Classes {
     @Enumerated(EnumType.STRING)
     private OrdreEnseignements ordreEnseignement; // maternelle, primaire, secondaire, superieur
 
-    @OneToMany(mappedBy = "classeActuelle")
-    private List<CandidatAdmission> candidatsAdmission; // liste de ceux qui ont fait demande d'admission dans cette
-                                                        // classe
 }

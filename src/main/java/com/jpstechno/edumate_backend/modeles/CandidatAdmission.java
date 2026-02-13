@@ -3,14 +3,13 @@ package com.jpstechno.edumate_backend.modeles;
 import java.time.LocalDate;
 
 import org.hibernate.annotations.NaturalId;
-import org.springframework.cglib.core.Local;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -42,7 +41,7 @@ public class CandidatAdmission {
     @Column(nullable = false, length = 20)
     private String numeroTelephone;
 
-    @ManyToOne(optional = true)
-    private Classes classeActuelle;
+    @Column(columnDefinition = "TEXT")
+    private String adresse;
 
 }

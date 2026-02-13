@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class DocumentsSoumis {
+public class DocumentsJoints {
 
     @Id
     @GeneratedValue

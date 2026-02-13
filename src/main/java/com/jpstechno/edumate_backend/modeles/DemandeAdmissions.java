@@ -3,19 +3,14 @@ package com.jpstechno.edumate_backend.modeles;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.hibernate.annotations.NaturalId;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jpstechno.edumate_backend.modeles.ClesComposes.DemandeAdmissionKey;
-import com.jpstechno.edumate_backend.modeles.enumerations.Genres;
 import com.jpstechno.edumate_backend.modeles.enumerations.StatutDemandeAdmission;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
@@ -35,12 +30,20 @@ public class DemandeAdmissions {
 
     @EmbeddedId
     @EqualsAndHashCode.Include
-    private DemandeAdmissionKey admissionId;
+    private DemandeAdmissionKey admissionId; /*
+                                              * cle compose de candidat_id, classe_id et anneeScolaire_id
+                                              * pour assurer une seule demande d'admission par candidat chaque annee.
+                                              */
 
     private LocalDate dateDemandeAdmission = LocalDate.now();
 
+    @Column(nullable = false, unique = true)
+    private String numeroDemande;
+
     @Enumerated(EnumType.STRING)
     private StatutDemandeAdmission statutDemande = StatutDemandeAdmission.EN_ATTENTE;
+
+    private String motivation;
 
     @ManyToOne
     @MapsId("candidatId")
@@ -58,6 +61,6 @@ public class DemandeAdmissions {
     private AnneeScolaires anneeScolaire;
 
     @OneToMany(mappedBy = "documentAdmission")
-    private List<DocumentsSoumis> docsSoumisAdmission;
+    private List<DocumentsJoints> documentsJoint;
 
 };

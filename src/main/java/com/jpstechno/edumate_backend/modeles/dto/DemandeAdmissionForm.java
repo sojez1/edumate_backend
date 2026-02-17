@@ -1,7 +1,9 @@
-package com.jpstechno.edumate_backend.modeles;
+package com.jpstechno.edumate_backend.modeles.dto;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import com.jpstechno.edumate_backend.modeles.DocumentsJoints;
 
 import lombok.Data;
 
@@ -18,5 +20,6 @@ public class DemandeAdmissionForm {
     private String classeSouhaitee;
     private String anneeScolaire;
     private String motivation;
+
     private List<DocumentsJoints> listeDocs;
 }

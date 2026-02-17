@@ -4,15 +4,16 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.jpstechno.edumate_backend.KeyGenerator.CustomIdGeneratorService;
 import com.jpstechno.edumate_backend.modeles.AnneeScolaires;
 import com.jpstechno.edumate_backend.modeles.CandidatAdmission;
 import com.jpstechno.edumate_backend.modeles.Classes;
-import com.jpstechno.edumate_backend.modeles.DemandeAdmissionForm;
 import com.jpstechno.edumate_backend.modeles.DemandeAdmissions;
 import com.jpstechno.edumate_backend.modeles.ClesComposes.DemandeAdmissionKey;
+import com.jpstechno.edumate_backend.modeles.dto.DemandeAdmissionForm;
 import com.jpstechno.edumate_backend.modeles.enumerations.StatutDemandeAdmission;
 import com.jpstechno.edumate_backend.repositories.AnneeScolaireRepo;
 import com.jpstechno.edumate_backend.repositories.CandidatAdmissionRepo;
@@ -36,20 +37,17 @@ public class DemandeAdmissionImplementation implements DemandeAdmissionService {
 
     @Override
     public List<DemandeAdmissions> listerDemandesAdmissionsParAnnee() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'listerDemandesAdmissionsParAnnee'");
+        return null;
     }
 
     @Override
     public List<DemandeAdmissions> listerDemandesAdmissionsParEleve(Long eleveId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'listerDemandesAdmissionsParEleve'");
+        return null;
     }
 
     @Override
     public void supprimerDemandeAdmission(Long eleveId, String anneeScolaire) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'supprimerDemandeAdmission'");
+
     }
 
     @Override
@@ -129,6 +127,13 @@ public class DemandeAdmissionImplementation implements DemandeAdmissionService {
             return demandeAdmissionRepo.save(nouvelleDemande);
         }
 
+    }
+
+    @Override
+    public List<DemandeAdmissions> listerDemandeAdmission() {
+        Sort trieAnneeStatut = Sort.by(Sort.Direction.ASC, "anneeScolaire");
+        List<DemandeAdmissions> reponseData = demandeAdmissionRepo.findAll(trieAnneeStatut);
+        return reponseData;
     }
 
 }

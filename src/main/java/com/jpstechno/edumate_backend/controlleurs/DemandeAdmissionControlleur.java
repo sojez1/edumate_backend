@@ -1,16 +1,24 @@
 package com.jpstechno.edumate_backend.controlleurs;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jpstechno.edumate_backend.modeles.DemandeAdmissionForm;
 import com.jpstechno.edumate_backend.modeles.DemandeAdmissions;
+import com.jpstechno.edumate_backend.modeles.DocumentsJoints;
+import com.jpstechno.edumate_backend.modeles.dto.DemandeAdmissionForm;
+import com.jpstechno.edumate_backend.modeles.dto.GetAdmissionDetailsForm;
+import com.jpstechno.edumate_backend.repositories.DocumentsJointsRepo;
 import com.jpstechno.edumate_backend.services.DemandeAdmissionService;
+import com.jpstechno.edumate_backend.services.DocumentsJointService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class DemandeAdmissionControlleur {
 
     private final DemandeAdmissionService demandeAdmissionService;
+    private final DocumentsJointService docsJointService;
 
     @PostMapping("/soumettre")
     public ResponseEntity<String> soumettreDemandeAdmission(@RequestBody DemandeAdmissionForm demandeAdmission) {
@@ -28,6 +37,33 @@ public class DemandeAdmissionControlleur {
         String message = String.format("Votre demande d'admission est cree sous le numero %s",
                 nouvelleDemande.getNumeroDemande());
         return ResponseEntity.status(HttpStatus.CREATED).body(message);
+    }
+
+    @GetMapping("/liste-demande-admission")
+    public ResponseEntity<List<GetAdmissionDetailsForm>> listeDemandeAdmission() {
+        List<DemandeAdmissions> reponse = demandeAdmissionService.listerDemandeAdmission();
+        List<GetAdmissionDetailsForm> result = new ArrayList<>();
+        for (DemandeAdmissions eachDemande : reponse) {
+            GetAdmissionDetailsForm res = new GetAdmissionDetailsForm(
+                    eachDemande.getCandidatAdmission().getDateNaissance().toString(),
+                    eachDemande.getAnneeScolaire().getAnneeScolaire(), eachDemande.getNumeroDemande(),
+                    eachDemande.getCandidatAdmission().getNom() + " " + eachDemande.getCandidatAdmission().getPrenom(),
+                    eachDemande.getClasseSouhaitee().getNomClasse(), eachDemande.getStatutDemande().name(),
+                    eachDemande.getDateDemandeAdmission().toString());
+            result.add(res);
+
+        }
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+
+    }
+
+    @GetMapping("/documets_par_demande_admission")
+    public ResponseEntity<List<DocumentsJoints>> getDocumentsJointParDemandeAdmission(String numeroDemandeAdmission) {
+        List<DocumentsJoints> lesDocsJoints = docsJointService
+                .getAllDocumentsJointPourAdmission(numeroDemandeAdmission);
+        return new ResponseEntity<>(lesDocsJoints, HttpStatus.OK);
+
     }
 
 }

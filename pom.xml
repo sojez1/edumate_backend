@@ -112,7 +112,6 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<skipTests>true</skipTests>  <!--POur eviter l'execution des tests. A enlever avant version final en prod-->
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>

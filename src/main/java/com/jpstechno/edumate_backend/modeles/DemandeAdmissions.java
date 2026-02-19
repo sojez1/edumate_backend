@@ -63,4 +63,7 @@ public class DemandeAdmissions {
     @OneToMany(mappedBy = "documentAdmission")
     private List<DocumentsJoints> documentsJoint;
 
+    @OneToMany(mappedBy = "demandeAdmission")
+    private List<AdmissionDecisions> decisions;
+
 };

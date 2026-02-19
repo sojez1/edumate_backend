@@ -12,11 +12,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jpstechno.edumate_backend.modeles.AdmissionDecisions;
 import com.jpstechno.edumate_backend.modeles.DemandeAdmissions;
 import com.jpstechno.edumate_backend.modeles.DocumentsJoints;
 import com.jpstechno.edumate_backend.modeles.dto.DemandeAdmissionForm;
 import com.jpstechno.edumate_backend.modeles.dto.GetAdmissionDetailsForm;
-import com.jpstechno.edumate_backend.repositories.DocumentsJointsRepo;
+
+import com.jpstechno.edumate_backend.services.DecisionAdmissionService;
 import com.jpstechno.edumate_backend.services.DemandeAdmissionService;
 import com.jpstechno.edumate_backend.services.DocumentsJointService;
 
@@ -30,6 +32,7 @@ public class DemandeAdmissionControlleur {
 
     private final DemandeAdmissionService demandeAdmissionService;
     private final DocumentsJointService docsJointService;
+    private final DecisionAdmissionService decisionAdmissionService;
 
     @PostMapping("/soumettre")
     public ResponseEntity<String> soumettreDemandeAdmission(@RequestBody DemandeAdmissionForm demandeAdmission) {
@@ -64,6 +67,19 @@ public class DemandeAdmissionControlleur {
                 .getAllDocumentsJointPourAdmission(numeroDemandeAdmission);
         return new ResponseEntity<>(lesDocsJoints, HttpStatus.OK);
 
+    }
+
+    @PostMapping("/prendre_decision")
+    public ResponseEntity<AdmissionDecisions> prendreUneDecision(AdmissionDecisions decisions) {
+        AdmissionDecisions NouvelleDecision = decisionAdmissionService.ajouterUneDecision(decisions);
+        return new ResponseEntity<>(NouvelleDecision, HttpStatus.CREATED);
+
+    }
+
+    @GetMapping("/mes_decisions_admission/{numeroDemande}")
+    public ResponseEntity<List<AdmissionDecisions>> mesDecisionsAdmission(String numeroAdmission) {
+        List<AdmissionDecisions> result = decisionAdmissionService.getAllDecisionParDemande(numeroAdmission);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 }

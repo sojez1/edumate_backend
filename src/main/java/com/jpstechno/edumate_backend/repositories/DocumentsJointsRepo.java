@@ -10,7 +10,7 @@ import com.jpstechno.edumate_backend.modeles.DocumentsJoints;
 
 public interface DocumentsJointsRepo extends JpaRepository<DocumentsJoints, Long> {
 
-    @Query("SELECT doc FROM DocumentsJoints doc WHERE doc.documentAdmission.numeroDemande=:numeroDemande")
+    @Query("SELECT doc FROM DocumentsJoints doc WHERE doc.demandeAdmission.numeroDemande=:numeroDemande")
     List<DocumentsJoints> findDocumentsByNumeroAdmission(@Param("numeroDemande") String numeroDemandeAdmission);
 
 }

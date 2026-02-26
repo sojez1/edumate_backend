@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jpstechno.edumate_backend.modeles.enumerations.OrdreEnseignements;
+import com.jpstechno.edumate_backend.modeles.enumerations.TypeParents;
 import com.jpstechno.edumate_backend.utilitaires.EnumsAsList;
 
 @RestController
@@ -18,6 +19,11 @@ public class EnumerationsControlleur {
     @GetMapping("/ordreEnseignements")
     public List<String> getOrdreEnseignements() {
         return EnumsAsList.getEnumList(OrdreEnseignements.class);
+    }
+
+    @GetMapping("/getTypeParents")
+    public List<String> getTypeParents() {
+        return EnumsAsList.getEnumList(TypeParents.class);
     }
 
 }

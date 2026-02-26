@@ -1,21 +1,23 @@
 package com.jpstechno.edumate_backend.controlleurs;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.jpstechno.edumate_backend.modeles.AdmissionDecisions;
 import com.jpstechno.edumate_backend.modeles.DemandeAdmissions;
 import com.jpstechno.edumate_backend.modeles.DocumentsJoints;
-import com.jpstechno.edumate_backend.modeles.dto.DemandeAdmissionForm;
 import com.jpstechno.edumate_backend.modeles.dto.GetAdmissionDetailsForm;
 
 import com.jpstechno.edumate_backend.services.DecisionAdmissionService;
@@ -34,8 +36,23 @@ public class DemandeAdmissionControlleur {
     private final DocumentsJointService docsJointService;
     private final DecisionAdmissionService decisionAdmissionService;
 
-    @PostMapping("/soumettre")
-    public ResponseEntity<String> soumettreDemandeAdmission(@RequestBody DemandeAdmissionForm demandeAdmission) {
+    @PostMapping(value = "/soumettre", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> soumettreDemandeAdmission(
+            @RequestPart("demandeAdmission") DemandeAdmissions demandeAdmission,
+            @RequestPart(value = "documentsJoint", required = false) List<MultipartFile> documentsJoint)
+            throws IOException {
+
+        if (documentsJoint != null) {
+            List<DocumentsJoints> docsJoint = new ArrayList<>();
+            for (MultipartFile multipartFile : documentsJoint) {
+                DocumentsJoints doc = new DocumentsJoints();
+                doc.setTypeDoc(multipartFile.getContentType());
+                doc.setDocumentData(multipartFile.getBytes());
+                doc.setNomDuDocument(multipartFile.getOriginalFilename());
+                docsJoint.add(doc);
+            }
+            demandeAdmission.setDocumentsJoint(docsJoint);
+        }
         DemandeAdmissions nouvelleDemande = demandeAdmissionService.creerDemandeAdmission(demandeAdmission);
         String message = String.format("Votre demande d'admission est cree sous le numero %s",
                 nouvelleDemande.getNumeroDemande());

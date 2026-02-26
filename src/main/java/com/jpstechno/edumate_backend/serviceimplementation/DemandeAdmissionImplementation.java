@@ -8,16 +8,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.jpstechno.edumate_backend.KeyGenerator.CustomIdGeneratorService;
-import com.jpstechno.edumate_backend.modeles.AnneeScolaires;
 import com.jpstechno.edumate_backend.modeles.CandidatAdmission;
-import com.jpstechno.edumate_backend.modeles.Classes;
 import com.jpstechno.edumate_backend.modeles.DemandeAdmissions;
-import com.jpstechno.edumate_backend.modeles.ClesComposes.DemandeAdmissionKey;
-import com.jpstechno.edumate_backend.modeles.dto.DemandeAdmissionForm;
+import com.jpstechno.edumate_backend.modeles.Parents;
 import com.jpstechno.edumate_backend.modeles.enumerations.StatutDemandeAdmission;
-import com.jpstechno.edumate_backend.repositories.AnneeScolaireRepo;
 import com.jpstechno.edumate_backend.repositories.CandidatAdmissionRepo;
-import com.jpstechno.edumate_backend.repositories.ClassesRepo;
 import com.jpstechno.edumate_backend.repositories.DemandeAdmissionRepo;
 import com.jpstechno.edumate_backend.services.DemandeAdmissionService;
 
@@ -29,8 +24,6 @@ import lombok.RequiredArgsConstructor;
 public class DemandeAdmissionImplementation implements DemandeAdmissionService {
 
     private final DemandeAdmissionRepo demandeAdmissionRepo;
-    private final AnneeScolaireRepo anneeScolaireRepo;
-    private final ClassesRepo classesRepo;
     private final CandidatAdmissionRepo candidatAdmissionRepo;
     private final CustomIdGeneratorService idGenerator;
     private final ApplicationEventPublisher admissionPublisher;
@@ -52,10 +45,7 @@ public class DemandeAdmissionImplementation implements DemandeAdmissionService {
 
     @Override
     public List<DemandeAdmissions> listerDemandesAdmissionsParClasseEtAnnee(Long classeId, String anneeScolaire) {
-        return demandeAdmissionRepo.findAll().stream()
-                .filter(demande -> demande.getAdmissionId().getClasseId().equals(classeId)
-                        && demande.getAnneeScolaire().getAnneeScolaire().equalsIgnoreCase(anneeScolaire))
-                .toList();
+        return null;
     }
 
     @Override
@@ -67,64 +57,47 @@ public class DemandeAdmissionImplementation implements DemandeAdmissionService {
 
     @Override
     @Transactional
-    public DemandeAdmissions creerDemandeAdmission(DemandeAdmissionForm admissionData) {
+    public DemandeAdmissions creerDemandeAdmission(DemandeAdmissions admissionData) {
 
-        // verifier si le candidat existe deja, sinon creer un nouveau candidat
-        CandidatAdmission candidat = candidatAdmissionRepo.findByEmailIgnoreCase(admissionData.getEmail())
+        // verifier si candidat existait, si non, creer un nouveau candidat
+        String nomCandidat = admissionData.getCandidatAdmission().getNom();
+        String prenomCandidat = admissionData.getCandidatAdmission().getPrenom();
+        LocalDate dateNaissance = admissionData.getCandidatAdmission().getDateNaissance();
+
+        CandidatAdmission candidat = candidatAdmissionRepo
+                .getCandidatByNomCompletDateNaissance(nomCandidat, prenomCandidat, dateNaissance)
                 .orElseGet(() -> {
-
-                    CandidatAdmission nouvoCandidat = new CandidatAdmission();
-                    nouvoCandidat.setAdresse(admissionData.getAdresse());
-
-                    // d'abord convertir la date de naissance recu au format string en format
-                    // LocalDate
-                    LocalDate convertedDateOfBirth = LocalDate.parse(admissionData.getDateNaissance());
-                    nouvoCandidat.setDateNaissance(convertedDateOfBirth);
-
-                    nouvoCandidat.setEmail(admissionData.getEmail());
-                    nouvoCandidat.setNom(admissionData.getNom());
-                    nouvoCandidat.setNumeroTelephone(admissionData.getNumeroTelephone());
-                    nouvoCandidat.setPrenom(admissionData.getPrenom());
-                    nouvoCandidat.setSexe(admissionData.getSexe());
-                    return candidatAdmissionRepo.save(nouvoCandidat);
+                    return candidatAdmissionRepo.save(admissionData.getCandidatAdmission());
                 });
+        admissionData.setCandidatAdmission(candidat);
 
-        // verifier et recuperer la classe souhaiter pour admission
-        Classes classeSouhaite = classesRepo.findByNomClasse(admissionData.getClasseSouhaitee()).get();
-
-        // verifier et recuperer l'annee scolaire pour commencer etude dans l'ecole
-        AnneeScolaires anneeScolaire = anneeScolaireRepo.findByAnneeScolaire(admissionData.getAnneeScolaire()).get();
-
-        // construire la cle preimaire (cle composee) pour la nouvelle demande
-        // d'admission
-        DemandeAdmissionKey admKey = new DemandeAdmissionKey();
-        admKey.setAnneeScolaireId(classeSouhaite.getId());
-        admKey.setCandidatId(candidat.getId());
-        admKey.setClasseId(classeSouhaite.getId());
-
-        // verifier si une demande n'existait pas pour meme annee, meme classe et meme
-        // personne
-        if (demandeAdmissionRepo.findById(admKey).isPresent()) {
+        // verifier si une demande d'admission n'existait pas pour ce candidat
+        // pour la meme annee et la meme classe
+        if (demandeAdmissionRepo.findByCandidatAnneeClasse(candidat, admissionData.getAnneeScolaire(),
+                admissionData.getClasseSouhaitee()).isPresent()) {
             throw new RuntimeException("Une demande d'admission existe deja pour ce candidat");
         } else {
-            DemandeAdmissions nouvelleDemande = new DemandeAdmissions();
-            // generer le numero de la demande
             String numeroDemande = idGenerator.nextId("DA");
+            admissionData.setNumeroDemande(numeroDemande);
+            admissionData.setDateDemandeAdmission(LocalDate.now());
+            admissionData.setStatutDemande(StatutDemandeAdmission.EN_ATTENTE);
 
-            nouvelleDemande.setNumeroDemande(numeroDemande);
-            nouvelleDemande.setAdmissionId(admKey);
-            nouvelleDemande.setAnneeScolaire(anneeScolaire);
-            nouvelleDemande.setCandidatAdmission(candidat);
-            nouvelleDemande.setDateDemandeAdmission(LocalDate.now());
-            nouvelleDemande.setClasseSouhaitee(classeSouhaite);
-            nouvelleDemande.setStatutDemande(StatutDemandeAdmission.EN_ATTENTE);
-            nouvelleDemande.setMotivation(admissionData.getMotivation());
-            nouvelleDemande.setDocumentsJoint(admissionData.getListeDocs());
+            if (admissionData.getCandidatAdmission().getParents() != null) { // lier candidat au parent
+                admissionData.getCandidatAdmission().getParents().forEach((paren -> paren.setCandidat(candidat)));
+                candidat.setParents(admissionData.getCandidatAdmission().getParents());
+                candidatAdmissionRepo.save(candidat);
+            }
+            ;
 
-            // publier l'evenement nouvelleDemande pour email candidat et facturation
+            if (admissionData.getDocumentsJoint() != null) { // lier document a admission
+                admissionData.getDocumentsJoint().forEach((doc) -> doc.setDemandeAdmission(admissionData));
+            }
+
+            DemandeAdmissions nouvelleDemande = demandeAdmissionRepo.save(admissionData);
+            // publier l'evenement nouvelleDemande en vue notification mail candidat et
+            // facturation frais d'etudes
             admissionPublisher.publishEvent(nouvelleDemande);
-
-            return demandeAdmissionRepo.save(nouvelleDemande);
+            return nouvelleDemande;
         }
 
     }

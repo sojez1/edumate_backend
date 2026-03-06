@@ -3,10 +3,13 @@ package com.jpstechno.edumate_backend.services;
 import java.util.List;
 
 import com.jpstechno.edumate_backend.modeles.DemandeAdmissions;
+import com.jpstechno.edumate_backend.modeles.dto.FiltreDemandeAdmission;
 
 public interface DemandeAdmissionService {
 
     DemandeAdmissions creerDemandeAdmission(DemandeAdmissions admissionData);
+
+    List<DemandeAdmissions> listeDemandeParAnneeClasseStatut(FiltreDemandeAdmission filtre);
 
     List<DemandeAdmissions> listerDemandeAdmission();
 

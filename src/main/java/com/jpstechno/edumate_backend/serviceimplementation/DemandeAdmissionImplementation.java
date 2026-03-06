@@ -8,12 +8,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.jpstechno.edumate_backend.KeyGenerator.CustomIdGeneratorService;
+import com.jpstechno.edumate_backend.modeles.AnneeScolaires;
 import com.jpstechno.edumate_backend.modeles.CandidatAdmission;
+import com.jpstechno.edumate_backend.modeles.Classes;
 import com.jpstechno.edumate_backend.modeles.DemandeAdmissions;
 import com.jpstechno.edumate_backend.modeles.Parents;
+import com.jpstechno.edumate_backend.modeles.dto.FiltreDemandeAdmission;
 import com.jpstechno.edumate_backend.modeles.enumerations.StatutDemandeAdmission;
 import com.jpstechno.edumate_backend.repositories.CandidatAdmissionRepo;
 import com.jpstechno.edumate_backend.repositories.DemandeAdmissionRepo;
+import com.jpstechno.edumate_backend.services.AnneeScolaireService;
 import com.jpstechno.edumate_backend.services.DemandeAdmissionService;
 
 import jakarta.transaction.Transactional;
@@ -107,6 +111,16 @@ public class DemandeAdmissionImplementation implements DemandeAdmissionService {
         Sort trieAnneeStatut = Sort.by(Sort.Direction.ASC, "anneeScolaire");
         List<DemandeAdmissions> reponseData = demandeAdmissionRepo.findAll(trieAnneeStatut);
         return reponseData;
+    }
+
+    @Override
+    public List<DemandeAdmissions> listeDemandeParAnneeClasseStatut(FiltreDemandeAdmission filtre) {
+        String annee = filtre.annee() == "" ? null : filtre.annee();
+        String classe = filtre.classe() == "" ? null : filtre.classe();
+        StatutDemandeAdmission statut = filtre.statut() == "" ? null : StatutDemandeAdmission.valueOf(filtre.statut());
+
+        List<DemandeAdmissions> result = demandeAdmissionRepo.getListeDemandeAdmission(annee, classe, statut);
+        return result;
     }
 
 }

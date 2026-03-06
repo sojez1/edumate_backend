@@ -3,6 +3,7 @@ package com.jpstechno.edumate_backend.modeles;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jpstechno.edumate_backend.modeles.enumerations.StatutDemandeAdmission;
 
 import jakarta.persistence.CascadeType;
@@ -23,9 +24,9 @@ import lombok.Setter;
 
 @Entity
 @Table(uniqueConstraints = {
-        @UniqueConstraint(name = "ku_candidat_classe_annee", columnNames = {
-                "candidat_id", "classe_id", "annees_scolaire_id"
-        })
+                @UniqueConstraint(name = "ku_candidat_classe_annee", columnNames = {
+                                "candidat_id", "classe_id", "annees_scolaire_id"
+                })
 })
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,35 +34,37 @@ import lombok.Setter;
 @Setter
 public class DemandeAdmissions {
 
-    @Id
-    private String numeroDemande;
+        @Id
+        private String numeroDemande;
 
-    private LocalDate dateDemandeAdmission = LocalDate.now();
+        private LocalDate dateDemandeAdmission = LocalDate.now();
 
-    @Enumerated(EnumType.STRING)
-    private StatutDemandeAdmission statutDemande = StatutDemandeAdmission.EN_ATTENTE;
+        @Enumerated(EnumType.STRING)
+        private StatutDemandeAdmission statutDemande = StatutDemandeAdmission.EN_ATTENTE;
 
-    @Column(columnDefinition = "TEXT")
-    private String motivation;
+        @Column(columnDefinition = "TEXT")
+        private String motivation;
 
-    @ManyToOne
-    @JoinColumn(name = "candidat_id", nullable = false)
-    private CandidatAdmission candidatAdmission;
+        @ManyToOne
+        @JoinColumn(name = "candidat_id", nullable = false)
+        private CandidatAdmission candidatAdmission;
 
-    @ManyToOne
-    @JoinColumn(name = "classe_id", nullable = false)
-    private Classes classeSouhaitee;
+        @ManyToOne
+        @JoinColumn(name = "classe_id", nullable = false)
+        private Classes classeSouhaitee;
 
-    @ManyToOne
-    @JoinColumn(name = "annees_scolaire_id", nullable = false)
-    private AnneeScolaires anneeScolaire;
+        @ManyToOne
+        @JoinColumn(name = "annees_scolaire_id", nullable = false)
+        private AnneeScolaires anneeScolaire;
 
-    @OneToMany(mappedBy = "demandeAdmission", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DocumentsJoints> documentsJoint;
+        @OneToMany(mappedBy = "demandeAdmission", cascade = CascadeType.ALL, orphanRemoval = true)
+        @JsonIgnore
+        private List<DocumentsJoints> documentsJoint;
 
-    @OneToMany(mappedBy = "demandeAdmission", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AdmissionDecisions> decisions;
+        @OneToMany(mappedBy = "demandeAdmission", cascade = CascadeType.ALL, orphanRemoval = true)
+        @JsonIgnore
+        private List<AdmissionDecisions> decisions;
 
-    private Boolean vieAvecLesDeuxParents = true;
+        private Boolean vieAvecLesDeuxParents = true;
 
 }

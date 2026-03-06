@@ -56,6 +56,7 @@ public class CandidatAdmission {
     private List<Parents> parents;
 
     @OneToMany(mappedBy = "candidatAdmission", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<DemandeAdmissions> listeDesAdmissions;
 
 }

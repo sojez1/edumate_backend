@@ -10,16 +10,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.jpstechno.edumate_backend.modeles.AdmissionDecisions;
+import com.jpstechno.edumate_backend.modeles.AnneeScolaires;
+import com.jpstechno.edumate_backend.modeles.Classes;
 import com.jpstechno.edumate_backend.modeles.DemandeAdmissions;
 import com.jpstechno.edumate_backend.modeles.DocumentsJoints;
+import com.jpstechno.edumate_backend.modeles.dto.FiltreDemandeAdmission;
 import com.jpstechno.edumate_backend.modeles.dto.GetAdmissionDetailsForm;
-
+import com.jpstechno.edumate_backend.modeles.enumerations.StatutDemandeAdmission;
 import com.jpstechno.edumate_backend.services.DecisionAdmissionService;
 import com.jpstechno.edumate_backend.services.DemandeAdmissionService;
 import com.jpstechno.edumate_backend.services.DocumentsJointService;
@@ -97,6 +102,14 @@ public class DemandeAdmissionControlleur {
     public ResponseEntity<List<AdmissionDecisions>> mesDecisionsAdmission(String numeroAdmission) {
         List<AdmissionDecisions> result = decisionAdmissionService.getAllDecisionParDemande(numeroAdmission);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping("listeDemandeAdmission")
+    public ResponseEntity<List<DemandeAdmissions>> getListeDemandeParAnneeClasseStatut(
+            @RequestBody FiltreDemandeAdmission filtre) {
+        List<DemandeAdmissions> result = demandeAdmissionService.listeDemandeParAnneeClasseStatut(filtre);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+
     }
 
 }

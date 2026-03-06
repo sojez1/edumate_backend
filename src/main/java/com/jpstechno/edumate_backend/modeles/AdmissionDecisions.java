@@ -1,4 +1,10 @@
+/**Cette classe permet de modeliser les decisions prises par l'administration
+ * suite a une demande d'admission
+ */
+
 package com.jpstechno.edumate_backend.modeles;
+
+import java.time.LocalDate;
 
 import com.jpstechno.edumate_backend.modeles.enumerations.StatutDemandeAdmission;
 
@@ -29,6 +35,10 @@ public class AdmissionDecisions {
 
     @Enumerated(EnumType.STRING)
     private StatutDemandeAdmission statut;
+
+    private boolean necessiteAction = false;
+
+    private LocalDate dateLimiteAction;
 
     @Column(columnDefinition = "TEXT")
     private String commentaires;

@@ -9,15 +9,21 @@ import com.jpstechno.edumate_backend.modeles.AnneeScolaires;
 import com.jpstechno.edumate_backend.modeles.CandidatAdmission;
 import com.jpstechno.edumate_backend.modeles.Classes;
 import com.jpstechno.edumate_backend.modeles.DemandeAdmissions;
+import com.jpstechno.edumate_backend.modeles.enumerations.StatutDemandeAdmission;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface DemandeAdmissionRepo extends JpaRepository<DemandeAdmissions, String> {
 
-    Optional<DemandeAdmissions> findByNumeroDemande(String numeroDemande);
+        Optional<DemandeAdmissions> findByNumeroDemande(String numeroDemande);
 
-    @Query("SELECT adm FROM DemandeAdmissions adm WHERE adm.anneeScolaire = :anneeScolaire AND adm.classeSouhaitee = :classe AND adm.candidatAdmission = :candidat")
-    Optional<DemandeAdmissions> findByCandidatAnneeClasse(@Param("candidat") CandidatAdmission candidat,
-            @Param("anneeScolaire") AnneeScolaires annee, @Param("classe") Classes clas);
+        @Query("SELECT adm FROM DemandeAdmissions adm WHERE adm.anneeScolaire = :anneeScolaire AND adm.classeSouhaitee = :classe AND adm.candidatAdmission = :candidat")
+        Optional<DemandeAdmissions> findByCandidatAnneeClasse(@Param("candidat") CandidatAdmission candidat,
+                        @Param("anneeScolaire") AnneeScolaires annee, @Param("classe") Classes clas);
 
+        @Query("SELECT demande FROM DemandeAdmissions demande WHERE demande.anneeScolaire.anneeScolaire = :annee AND demande.classeSouhaitee.nomClasse = :classe AND demande.statutDemande = :statut")
+        List<DemandeAdmissions> getListeDemandeAdmission(@Param("annee") String annee,
+                        @Param("classe") String classe,
+                        @Param("statut") StatutDemandeAdmission statut);
 }

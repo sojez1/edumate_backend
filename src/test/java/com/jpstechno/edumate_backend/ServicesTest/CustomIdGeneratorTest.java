@@ -20,7 +20,7 @@ public class CustomIdGeneratorTest {
         String key1 = generateur.nextId("DA");
         String key2 = generateur.nextId("DA");
 
-        System.out.println(key2);
+        System.out.println(key1);
         System.out.println(key2);
 
     }

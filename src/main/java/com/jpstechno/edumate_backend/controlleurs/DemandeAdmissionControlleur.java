@@ -7,24 +7,21 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.jpstechno.edumate_backend.modeles.AdmissionDecisions;
-import com.jpstechno.edumate_backend.modeles.AnneeScolaires;
-import com.jpstechno.edumate_backend.modeles.Classes;
 import com.jpstechno.edumate_backend.modeles.DemandeAdmissions;
 import com.jpstechno.edumate_backend.modeles.DocumentsJoints;
 import com.jpstechno.edumate_backend.modeles.dto.FiltreDemandeAdmission;
 import com.jpstechno.edumate_backend.modeles.dto.GetAdmissionDetailsForm;
-import com.jpstechno.edumate_backend.modeles.enumerations.StatutDemandeAdmission;
 import com.jpstechno.edumate_backend.services.DecisionAdmissionService;
 import com.jpstechno.edumate_backend.services.DemandeAdmissionService;
 import com.jpstechno.edumate_backend.services.DocumentsJointService;
@@ -42,6 +39,7 @@ public class DemandeAdmissionControlleur {
     private final DecisionAdmissionService decisionAdmissionService;
 
     @PostMapping(value = "/soumettre", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("permitAll()")
     public ResponseEntity<String> soumettreDemandeAdmission(
             @RequestPart("demandeAdmission") DemandeAdmissions demandeAdmission,
             @RequestPart(value = "documentsJoint", required = false) List<MultipartFile> documentsJoint)
@@ -65,6 +63,7 @@ public class DemandeAdmissionControlleur {
     }
 
     @GetMapping("/liste-demande-admission")
+    @PreAuthorize("hasAnyRole('ADMINISTRATION, WEBMASTER')")
     public ResponseEntity<List<GetAdmissionDetailsForm>> listeDemandeAdmission() {
         List<DemandeAdmissions> reponse = demandeAdmissionService.listerDemandeAdmission();
         List<GetAdmissionDetailsForm> result = new ArrayList<>();
@@ -110,6 +109,12 @@ public class DemandeAdmissionControlleur {
         List<DemandeAdmissions> result = demandeAdmissionService.listeDemandeParAnneeClasseStatut(filtre);
         return new ResponseEntity<>(result, HttpStatus.OK);
 
+    }
+
+    @PostMapping("getDemande")
+    public ResponseEntity<DemandeAdmissions> getDemandeAdmissionByNumeroDemande(@RequestBody String numDemande) {
+        DemandeAdmissions demandeAdmis = demandeAdmissionService.getDemandeByNumDemande(numDemande);
+        return new ResponseEntity<DemandeAdmissions>(demandeAdmis, HttpStatus.OK);
     }
 
 }

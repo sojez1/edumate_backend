@@ -30,8 +30,7 @@ public class ClasseImplementation implements ClassesSerices {
 
     @Override
     public Classes updateClasse(Long id, Classes classeDetails) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateClasse'");
+        return null;
     }
 
     @Override

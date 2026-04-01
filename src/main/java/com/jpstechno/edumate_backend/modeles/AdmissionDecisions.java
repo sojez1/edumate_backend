@@ -38,6 +38,8 @@ public class AdmissionDecisions {
 
     private boolean necessiteAction = false;
 
+    private LocalDate dateDecision;
+
     private LocalDate dateLimiteAction;
 
     @Column(columnDefinition = "TEXT")

@@ -13,13 +13,15 @@ public interface UtilisateurService {
 
     List<Utilisateurs> RechercherUtilisateur(String motCle);
 
-    Utilisateurs desactiverUtilisateur(Long id);
+    Utilisateurs activateOrDesactivateUilisateur(Long id);
 
     List<Utilisateurs> listeUtilisateur();
 
+    void forgetPassword(String usernameOrPassword);
+
     void validerEmail(String token);
 
-    void AjouterRole(RoleUtilisateurs role);
+    void AjouterRole(Utilisateurs user, RoleUtilisateurs role);
 
     Utilisateurs getUtilisateurByEmail(String email);
 

@@ -11,6 +11,7 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,6 +29,9 @@ public class Utilisateurs {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NaturalId
+    private String username; // id for login
+
     private String nom;
 
     @Column(nullable = false)
@@ -38,12 +42,14 @@ public class Utilisateurs {
 
     private boolean valideEmail = false;
 
+    private boolean actif = false;
+
     private String telephone;
 
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @ElementCollection(targetClass = RoleUtilisateurs.class)
+    @ElementCollection(targetClass = RoleUtilisateurs.class, fetch = FetchType.EAGER)
     @Column(name = "userroles")
     private List<RoleUtilisateurs> role;
 }

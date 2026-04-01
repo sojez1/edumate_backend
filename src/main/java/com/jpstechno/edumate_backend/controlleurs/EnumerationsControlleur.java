@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jpstechno.edumate_backend.modeles.enumerations.OrdreEnseignements;
+import com.jpstechno.edumate_backend.modeles.enumerations.RoleUtilisateurs;
 import com.jpstechno.edumate_backend.modeles.enumerations.StatutDemandeAdmission;
 import com.jpstechno.edumate_backend.modeles.enumerations.TypeParents;
 import com.jpstechno.edumate_backend.utilitaires.EnumsAsList;
@@ -30,6 +31,11 @@ public class EnumerationsControlleur {
     @GetMapping("/listeStatutDemandeAdmission")
     public List<String> getListeStatutDemandeAdmission() {
         return EnumsAsList.getEnumList(StatutDemandeAdmission.class);
+    }
+
+    @GetMapping("/listeRoleUtilisateur")
+    public List<String> getListeRoleUtilisateur() {
+        return EnumsAsList.getEnumList(RoleUtilisateurs.class);
     }
 
 }

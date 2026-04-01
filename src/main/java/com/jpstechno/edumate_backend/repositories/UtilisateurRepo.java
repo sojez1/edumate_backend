@@ -15,6 +15,9 @@ public interface UtilisateurRepo extends JpaRepository<Utilisateurs, Long> {
 
     Optional<Utilisateurs> findByEmail(String email);
 
+    @Query("SELECT user FROM Utilisateurs user WHERE LOWER(user.username) = LOWER(:usernameOrEmail) OR LOWER(user.email) = LOWER(:usernameOrEmail)")
+    Optional<Utilisateurs> getUserByUsernameOrEmail(@Param("usernameOrEmail") String usernameOrEmail);
+
     @Transactional
     @Modifying
     @Query("update Utilisateurs usr set usr.valideEmail=true where usr.id=:id")

@@ -4,10 +4,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-import com.jpstechno.edumate_backend.AppEvents.NouveauUtilisateurEvent;
 import com.jpstechno.edumate_backend.modeles.TokenUtilisateurs;
 import com.jpstechno.edumate_backend.modeles.Utilisateurs;
 import com.jpstechno.edumate_backend.repositories.TokenUtilisateurRepo;
@@ -65,8 +63,8 @@ public class TokenServiceImplementation implements TokenService {
 
     @Override
     public String generateTokenValidationUrl(TokenUtilisateurs tokenUtilisateur) {
-        String token = this.genererToken();
-        String urlForActivation = "";
+        // String token = this.genererToken();
+        // String urlForActivation = "";
         // String urlValidation = evenementPlublier.getUrlForActivation() + "&token=" +
         // token;
         return null;

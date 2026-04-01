@@ -1,7 +1,6 @@
 package com.jpstechno.edumate_backend.serviceimplementation;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

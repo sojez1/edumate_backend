@@ -1,16 +1,20 @@
 package com.jpstechno.edumate_backend.serviceimplementation;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Sort;
-//import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.jpstechno.edumate_backend.AppEvents.NouveauUtilisateurEvent;
+import com.jpstechno.edumate_backend.modeles.TokenUtilisateurs;
 import com.jpstechno.edumate_backend.modeles.Utilisateurs;
 import com.jpstechno.edumate_backend.modeles.enumerations.RoleUtilisateurs;
+import com.jpstechno.edumate_backend.repositories.TokenUtilisateurRepo;
 import com.jpstechno.edumate_backend.repositories.UtilisateurRepo;
 import com.jpstechno.edumate_backend.services.UtilisateurService;
 
@@ -20,17 +24,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UtilisateurImplementation implements UtilisateurService {
 
+    private final PasswordEncoder passwordEncoder;
     private final UtilisateurRepo userRepo;
-    // private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisheur;
+    private final TokenUtilisateurRepo tokenUtilisateurRepo;
 
     @Override
     public Utilisateurs ajouterUtilisateur(Utilisateurs utilisateur) {
         boolean emailExisted = userRepo.findByEmail(utilisateur.getEmail()).isPresent();
 
         if (!emailExisted) {
-            // String cryptedPassword = passwordEncoder.encode(utilisateur.getPassword());
-            // utilisateur.setPassword(cryptedPassword);
+            // First, encrypted the password using passwordEncoder bean from configuration
+            utilisateur.setPassword(passwordEncoder.encode(utilisateur.getPassword()));
+
             Utilisateurs savedUser = userRepo.save(utilisateur);
             String url = ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path("/utilisateurs/verifierEmail")
@@ -47,10 +53,23 @@ public class UtilisateurImplementation implements UtilisateurService {
 
     }
 
+    /**
+     * Permet d'activer ou de desactiver un utilisateur
+     * Utilisateur desactiver ne peut pas login.
+     * 
+     * @param id id de l'utilisateur
+     * @return
+     */
+    @Override
+    public Utilisateurs activateOrDesactivateUilisateur(Long id) {
+        Utilisateurs usr = userRepo.findById(id).orElseThrow(() -> new RuntimeException("user id not valide"));
+        usr.setActif(!usr.isActif());
+        return userRepo.save(usr);
+    }
+
     @Override
     public Utilisateurs updateUtilisateurData(Utilisateurs newuserData, Long id) {
         Utilisateurs user = userRepo.findById(id).get();
-        user.setEmail(newuserData.getEmail());
         user.setNom(newuserData.getNom());
         user.setPrenoms(newuserData.getPrenoms());
         user.setTelephone(newuserData.getTelephone());
@@ -63,11 +82,6 @@ public class UtilisateurImplementation implements UtilisateurService {
                 .filter((util) -> util.getNom().equalsIgnoreCase(motCle))
                 .toList();
 
-    }
-
-    @Override
-    public Utilisateurs desactiverUtilisateur(Long id) {
-        return null;
     }
 
     @Override
@@ -85,34 +99,57 @@ public class UtilisateurImplementation implements UtilisateurService {
 
     }
 
+    /**
+     * Cette fonction permet d'ajouter un role a un utilisateur
+     * 
+     * @param user utilisateur a qui ont veut ajouter un role
+     * @param role role que l'on veut ajouter a l'utilisateur
+     */
     @Override
-    public void AjouterRole(RoleUtilisateurs role) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'AjouterRole'");
+    public void AjouterRole(Utilisateurs user, RoleUtilisateurs role) {
+        List<RoleUtilisateurs> theRoles = user.getRole();
+        theRoles.add(role);
+        user.setRole(theRoles);
+        userRepo.save(user); // update in the database
+
     }
 
     @Override
     public Utilisateurs getUtilisateurByEmail(String email) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUtilisateurByEmail'");
+        return null;
     }
 
     @Override
     public Utilisateurs getUtilisateurById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUtilisateurById'");
+        return userRepo.findById(id).orElse(null);
     }
 
     @Override
     public boolean existsByEmail(String email) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'existsByEmail'");
+        return false;
     }
 
     @Override
     public boolean hasRole(Utilisateurs utilisateur, RoleUtilisateurs role) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'hasRole'");
+        return true;
+    }
+
+    @Override
+    public void forgetPassword(String usernameOrPassword) {
+        Optional<Utilisateurs> utilisateur = userRepo.getUserByUsernameOrEmail(usernameOrPassword);
+        if (utilisateur.isPresent()) {// send link by email to change password
+            // 1- creer le token
+            String token = UUID.randomUUID().toString();
+            // 2- Enregistrer le token dans la base de donnees
+            TokenUtilisateurs userToken = new TokenUtilisateurs(utilisateur.get(), token);
+            tokenUtilisateurRepo.save(userToken);
+            // 3- creer url comportant le token et le username
+            String chemin = "";
+
+        } else {
+            throw new RuntimeException("Pas d<utilisateur corres[popndant aux donnees saisies");
+        }
+
     }
 
 }

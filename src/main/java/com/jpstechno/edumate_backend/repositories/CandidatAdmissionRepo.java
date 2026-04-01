@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.jpstechno.edumate_backend.modeles.CandidatAdmission;
-import com.jpstechno.edumate_backend.modeles.enumerations.TypeParents;
 
 public interface CandidatAdmissionRepo extends JpaRepository<CandidatAdmission, Long> {
 

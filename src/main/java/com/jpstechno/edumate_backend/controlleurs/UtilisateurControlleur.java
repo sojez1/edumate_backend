@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @CrossOrigin
-@RequestMapping("utilisateurs")
+@RequestMapping("/utilisateurs")
 @RequiredArgsConstructor
 public class UtilisateurControlleur {
 
@@ -28,18 +29,21 @@ public class UtilisateurControlleur {
     private final TokenService tokenService;
 
     @GetMapping("all_users")
+    @PreAuthorize("hasAnyRole('ADMINISTRATION', 'WEBMASTER')")
     public ResponseEntity<List<Utilisateurs>> getAllUsers() {
         List<Utilisateurs> myUsersList = userService.listeUtilisateur();
         return new ResponseEntity<List<Utilisateurs>>(myUsersList, HttpStatus.OK);
     }
 
-    @PostMapping("new_user")
+    @PostMapping("/new_user")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<Utilisateurs> createUser(@RequestBody Utilisateurs utilisateur) {
         Utilisateurs createduser = userService.ajouterUtilisateur(utilisateur);
         return new ResponseEntity<Utilisateurs>(createduser, HttpStatus.CREATED);
     }
 
     @GetMapping("verifierEmail")
+    @PreAuthorize("permitAll()")
     public String verifierEmail(@RequestParam("userId") String userId, @RequestParam("token") String token) {
         String result = tokenService.verifierToken(Long.parseLong(userId), token);
         if (result.equals("valide")) {

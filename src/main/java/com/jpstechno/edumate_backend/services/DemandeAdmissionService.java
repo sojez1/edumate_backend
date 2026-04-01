@@ -23,4 +23,6 @@ public interface DemandeAdmissionService {
 
     List<DemandeAdmissions> listerDemandesAdmissionsParEtat(String etat);
 
+    DemandeAdmissions getDemandeByNumDemande(String numDemande);
+
 }

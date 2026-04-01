@@ -1,7 +1,5 @@
 package com.jpstechno.edumate_backend.modeles;
 
-import java.util.List;
-
 import org.hibernate.annotations.NaturalId;
 
 import com.jpstechno.edumate_backend.modeles.enumerations.TypeParents;
@@ -14,7 +12,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;

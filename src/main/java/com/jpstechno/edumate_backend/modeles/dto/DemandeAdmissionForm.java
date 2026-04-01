@@ -1,6 +1,5 @@
 package com.jpstechno.edumate_backend.modeles.dto;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import com.jpstechno.edumate_backend.modeles.DocumentsJoints;

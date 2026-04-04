@@ -25,7 +25,7 @@ import com.jpstechno.edumate_backend.securityconfig.OtpService;
 import com.jpstechno.edumate_backend.securityconfig.TokenTemporaireService;
 
 @RestController
-@RequestMapping("auth")
+@RequestMapping("/auth")
 @CrossOrigin
 public class AuthenticationController {
 
@@ -58,14 +58,13 @@ public class AuthenticationController {
      */
     @PostMapping("/login")
     @PreAuthorize("permitAll()")
-    public String sAuthentifier(@RequestBody LoginRequestDto user) {
+    public String userLogin(@RequestBody LoginRequestDto user) {
 
         Authentication auth = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-
         if (auth.isAuthenticated()) {
-            return "login success";
-
+            Utilisateurs utilisateur = utilisateurRepo.getUserByUsernameOrEmail(user.getUsername()).get();
+            return jwtService.generateAccessToken(utilisateur);
         } else {
             throw new AuthenticationException("Identifiants invalides");
         }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,24 +27,28 @@ public class AnneeScolaireControlleur {
     private final AnneeScolaireService anneeScolaireService;
 
     @PostMapping("/creer")
+    @PreAuthorize("hasAnyRole('ADMINISTRATION', 'WEBMASTER')")
     public ResponseEntity<AnneeScolaires> creerAnneeScolaire(@RequestBody AnneeScolaires anneeScolaire) {
         AnneeScolaires nouvelleAnnee = anneeScolaireService.creerAnneeScolaire(anneeScolaire);
         return ResponseEntity.status(HttpStatus.CREATED).body(nouvelleAnnee);
     }
 
     @GetMapping("/lister")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<List<AnneeScolaires>> listeAnneeScolaires() {
         List<AnneeScolaires> annees = anneeScolaireService.listerAnneesScolaires();
         return ResponseEntity.ok(annees);
     }
 
     @PostMapping("/supprimer/{id}")
+    @PreAuthorize("hasAnyRole('ADMINISTRATION', 'WEBMASTER')")
     public ResponseEntity<Void> supprimerAnneeScolaire(@PathVariable Long id) {
         anneeScolaireService.supprimerAnneeScolaire(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/changerStatut/{id}")
+    @PreAuthorize("hasAnyRole('ADMINISTRATION', 'WEBMASTER')")
     public ResponseEntity<AnneeScolaires> activerOuDesactiverAnneeScolaire(@PathVariable Long id) {
         AnneeScolaires anneeScolaire = anneeScolaireService.activerOuDesactiverAnneeScolaire(id);
         return ResponseEntity.ok(anneeScolaire);

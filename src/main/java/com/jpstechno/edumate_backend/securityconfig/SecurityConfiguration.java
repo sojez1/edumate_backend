@@ -76,8 +76,8 @@ public class SecurityConfiguration {
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((request) -> request
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/utilisateurs/new_user/**").permitAll()
                         .requestMatchers("/", "/auth/login",
+                                "/error",
                                 "/auth/verifier-otp",
                                 "/auth/refreshToken",
                                 "/demande-admission/soumettre",

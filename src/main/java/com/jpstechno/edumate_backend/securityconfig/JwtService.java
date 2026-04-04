@@ -23,7 +23,7 @@ public class JwtService {
 
     int dureeToken = 5 * 60 * 1000; // 5 mn convertie en millisecond
     int dureeRefreshToken = 3 * 24 * 60 * 60 * 1000; // 3 jrs en millisecond
-    private final String secret = "abcdgcgncbccvxvxxM@%#vbvbbBbbnbxvcvbcvc===ghfhg.bgdg";
+    private final String secret = "abcdgcgncbccvxvxxMvbvbbBbbnbxvcvbcvcghfhgbgdg";
     // private Utilisateurs utilisateur;
 
     private SecretKey getKey() {
@@ -44,7 +44,7 @@ public class JwtService {
 
         return Jwts.builder()
                 .claims(claims)
-                .subject(utilisateur.getEmail())
+                .subject(utilisateur.getUsername())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + dureeToken))
                 .signWith(getKey())
@@ -60,7 +60,7 @@ public class JwtService {
 
         return Jwts.builder()
                 .claims(claims)
-                .subject(utilisateur.getEmail())
+                .subject(utilisateur.getUsername())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + dureeRefreshToken))
                 .signWith(getKey())
@@ -88,7 +88,7 @@ public class JwtService {
     public boolean isTokenValide(String token, UserDetails userDetails) {
         boolean tokenExpired = isTokenExpired(token);
         boolean isRealUser = userDetails.getUsername().equals(getUsernameFromToken(token));
-        return tokenExpired && isRealUser;
+        return !tokenExpired && isRealUser;
     }
 
 }

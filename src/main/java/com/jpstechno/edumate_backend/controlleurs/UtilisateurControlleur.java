@@ -1,6 +1,7 @@
 package com.jpstechno.edumate_backend.controlleurs;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jpstechno.edumate_backend.modeles.Utilisateurs;
+import com.jpstechno.edumate_backend.modeles.dto.UserRegistrationDto;
+import com.jpstechno.edumate_backend.modeles.dto.UtilisateursDto;
 import com.jpstechno.edumate_backend.services.TokenService;
 import com.jpstechno.edumate_backend.services.UtilisateurService;
 
@@ -29,16 +32,39 @@ public class UtilisateurControlleur {
     private final TokenService tokenService;
 
     @GetMapping("all_users")
-    @PreAuthorize("hasAnyRole('ADMINISTRATION', 'WEBMASTER')")
-    public ResponseEntity<List<Utilisateurs>> getAllUsers() {
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<List<UtilisateursDto>> getAllUsers() {
         List<Utilisateurs> myUsersList = userService.listeUtilisateur();
-        return new ResponseEntity<List<Utilisateurs>>(myUsersList, HttpStatus.OK);
+        List<UtilisateursDto> usersDtos = myUsersList.stream()
+                .map((user) -> {
+                    UtilisateursDto dto = new UtilisateursDto();
+                    dto.setId(user.getId());
+                    dto.setUsername(user.getUsername());
+                    dto.setNom(user.getNom());
+                    dto.setPrenoms(user.getPrenoms());
+                    dto.setEmail(user.getEmail());
+                    dto.setTelephone(user.getTelephone());
+                    dto.setRole(user.getRole());
+                    return dto;
+                }).toList();
+        return new ResponseEntity<List<UtilisateursDto>>(usersDtos, HttpStatus.OK);
+
     }
 
     @PostMapping("/new_user")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<Utilisateurs> createUser(@RequestBody Utilisateurs utilisateur) {
-        Utilisateurs createduser = userService.ajouterUtilisateur(utilisateur);
+    public ResponseEntity<Utilisateurs> createUser(@RequestBody UserRegistrationDto utilisateur) {
+        Utilisateurs newUser = new Utilisateurs();
+        newUser.setUsername(utilisateur.getUsername());
+        newUser.setNom(utilisateur.getNom());
+        newUser.setPrenoms(utilisateur.getPrenoms());
+        newUser.setEmail(utilisateur.getEmail());
+        newUser.setTelephone(utilisateur.getTelephone());
+        newUser.setPassword(utilisateur.getPassword());
+        newUser.setRole(utilisateur.getRole());
+        newUser.setValideEmail(false);
+        newUser.setActif(false);
+        Utilisateurs createduser = userService.ajouterUtilisateur(newUser);
         return new ResponseEntity<Utilisateurs>(createduser, HttpStatus.CREATED);
     }
 

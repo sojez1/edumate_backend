@@ -34,7 +34,7 @@ public class UtilisateursConnectes implements UserDetails {
 
     @Override
     public String getUsername() {
-        return utilisateur.getEmail();
+        return utilisateur.getUsername();
     }
 
     @Override

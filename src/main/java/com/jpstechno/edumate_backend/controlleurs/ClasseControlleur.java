@@ -33,6 +33,7 @@ public class ClasseControlleur {
     }
 
     @GetMapping("/listerClasses")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<List<Classes>> listerClasses() {
         List<Classes> classes = classeImplementation.getAllClasses();
         return ResponseEntity.ok(classes);

@@ -82,7 +82,9 @@ public class SecurityConfiguration {
                                 "/auth/refreshToken",
                                 "/demande-admission/soumettre",
                                 "/enumerations/**",
-                                "/utilisateurs/new_user/**")
+                                "/utilisateurs/new_user/**",
+                                "/classes/listerClasses/**",
+                                "/anneeScolaires/lister/**")
                         .permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form.disable())

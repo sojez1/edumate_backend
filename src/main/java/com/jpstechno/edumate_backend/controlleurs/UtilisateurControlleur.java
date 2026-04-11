@@ -1,8 +1,6 @@
 package com.jpstechno.edumate_backend.controlleurs;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jpstechno.edumate_backend.modeles.OldStudentRegistrationData;
 import com.jpstechno.edumate_backend.modeles.Utilisateurs;
 import com.jpstechno.edumate_backend.modeles.dto.UserRegistrationDto;
 import com.jpstechno.edumate_backend.modeles.dto.UtilisateursDto;
@@ -31,8 +30,15 @@ public class UtilisateurControlleur {
     private final UtilisateurService userService;
     private final TokenService tokenService;
 
+    /**
+     * Cette methode retourne la liste de tous les utilisateurs du systeme.
+     * Elle est accessible uniquement au webmaster et aux membres de
+     * l'administration de l'ecole
+     * 
+     * @return
+     */
     @GetMapping("all_users")
-    @PreAuthorize("permitAll()")
+    @PreAuthorize("hasAnyRole('WEBMASTER','ADMINISTRATION')")
     public ResponseEntity<List<UtilisateursDto>> getAllUsers() {
         List<Utilisateurs> myUsersList = userService.listeUtilisateur();
         List<UtilisateursDto> usersDtos = myUsersList.stream()

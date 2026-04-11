@@ -6,7 +6,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.jpstechno.edumate_backend.modeles.CandidatAdmission;
-import com.jpstechno.edumate_backend.modeles.Eleves;
+import com.jpstechno.edumate_backend.modeles.Etudiants;
 import com.jpstechno.edumate_backend.modeles.Parents;
 import com.jpstechno.edumate_backend.repositories.ParentsRepo;
 import com.jpstechno.edumate_backend.services.ParentsService;
@@ -20,7 +20,7 @@ public class ParentsImplementation implements ParentsService {
     private final ParentsRepo parentRepo;
 
     @Override
-    public void signalerAbsence(Eleves eleve) {
+    public void signalerAbsence(Etudiants eleve) {
 
     }
 
@@ -58,7 +58,7 @@ public class ParentsImplementation implements ParentsService {
     }
 
     @Override
-    public List<Parents> getListeParentsEtudiantActifs(Eleves etudiantActif) {
+    public List<Parents> getListeParentsEtudiantActifs(Etudiants etudiantActif) {
         return null;
     }
 

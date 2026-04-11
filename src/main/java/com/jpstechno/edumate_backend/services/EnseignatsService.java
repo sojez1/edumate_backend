@@ -1,9 +1,9 @@
 package com.jpstechno.edumate_backend.services;
 
-import com.jpstechno.edumate_backend.modeles.Eleves;
+import com.jpstechno.edumate_backend.modeles.Etudiants;
 
 public interface EnseignatsService {
 
-    void publierNotesEleve(Eleves eleve);
+    void publierNotesEleve(Etudiants eleve);
 
 }

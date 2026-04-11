@@ -15,41 +15,48 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import jakarta.persistence.Inheritance;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
-@Data
+@SuperBuilder
+@Getter
+@Setter
+@Inheritance(strategy = jakarta.persistence.InheritanceType.TABLE_PER_CLASS)
 public class Utilisateurs {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    protected Long id;
 
     @NaturalId
-    private String username; // id for login
+    protected String username; // id for login
 
-    private String nom;
+    protected String nom;
 
     @Column(nullable = false)
-    private String prenoms;
+    protected String prenoms;
 
     @NaturalId(mutable = true)
-    private String email;
+    protected String email;
 
-    private boolean valideEmail = false;
+    @Builder.Default
+    protected boolean valideEmail = false;
 
-    private boolean actif = false;
+    @Builder.Default
+    protected boolean actif = false;
 
-    private String telephone;
+    protected String telephone;
 
-    private String password;
+    protected String password;
 
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = RoleUtilisateurs.class, fetch = FetchType.EAGER)
     @Column(name = "userroles")
-    private List<RoleUtilisateurs> role;
+    protected List<RoleUtilisateurs> role;
 }

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jpstechno.edumate_backend.modeles.OldStudentRegistrationData;
 import com.jpstechno.edumate_backend.modeles.Utilisateurs;
 import com.jpstechno.edumate_backend.modeles.dto.UserRegistrationDto;
 import com.jpstechno.edumate_backend.modeles.dto.UtilisateursDto;
@@ -37,7 +36,7 @@ public class UtilisateurControlleur {
      * 
      * @return
      */
-    @GetMapping("all_users")
+    @GetMapping("/all_users")
     @PreAuthorize("hasAnyRole('WEBMASTER','ADMINISTRATION')")
     public ResponseEntity<List<UtilisateursDto>> getAllUsers() {
         List<Utilisateurs> myUsersList = userService.listeUtilisateur();
@@ -51,6 +50,8 @@ public class UtilisateurControlleur {
                     dto.setEmail(user.getEmail());
                     dto.setTelephone(user.getTelephone());
                     dto.setRole(user.getRole());
+                    dto.setValideEmail(user.isValideEmail());
+                    dto.setActif(user.getActif());
                     return dto;
                 }).toList();
         return new ResponseEntity<List<UtilisateursDto>>(usersDtos, HttpStatus.OK);
@@ -60,18 +61,22 @@ public class UtilisateurControlleur {
     @PostMapping("/new_user")
     @PreAuthorize("permitAll()")
     public ResponseEntity<Utilisateurs> createUser(@RequestBody UserRegistrationDto utilisateur) {
-        Utilisateurs newUser = new Utilisateurs();
-        newUser.setUsername(utilisateur.getUsername());
-        newUser.setNom(utilisateur.getNom());
-        newUser.setPrenoms(utilisateur.getPrenoms());
-        newUser.setEmail(utilisateur.getEmail());
-        newUser.setTelephone(utilisateur.getTelephone());
-        newUser.setPassword(utilisateur.getPassword());
-        newUser.setRole(utilisateur.getRole());
-        newUser.setValideEmail(false);
-        newUser.setActif(false);
-        Utilisateurs createduser = userService.ajouterUtilisateur(newUser);
-        return new ResponseEntity<Utilisateurs>(createduser, HttpStatus.CREATED);
+        /*
+         * /
+         * Utilisateurs newUser = new Utilisateurs();
+         * newUser.setUsername(utilisateur.getUsername());
+         * newUser.setNom(utilisateur.getNom());
+         * newUser.setPrenoms(utilisateur.getPrenoms());
+         * newUser.setEmail(utilisateur.getEmail());
+         * newUser.setTelephone(utilisateur.getTelephone());
+         * newUser.setPassword(utilisateur.getPassword());
+         * newUser.setRole(utilisateur.getRole());
+         * newUser.setValideEmail(false);
+         * newUser.setActif(false);
+         * Utilisateurs createduser = userService.ajouterUtilisateur(newUser);
+         * return new ResponseEntity<Utilisateurs>(createduser, HttpStatus.CREATED);
+         */
+        return null;
     }
 
     @GetMapping("verifierEmail")
@@ -83,6 +88,13 @@ public class UtilisateurControlleur {
         }
         return "Echec de la validation de votre email";
 
+    }
+
+    @PostMapping("/activer-desactiver")
+    @PreAuthorize("hasAnyRole('WEBMASTER','ADMINISTRATION')")
+    public ResponseEntity<Utilisateurs> activateOrDesactivateUser(@RequestParam("id") long id) {
+        Utilisateurs user = userService.activateOrDesactivateUilisateur(id);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
 }

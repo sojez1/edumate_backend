@@ -2,7 +2,6 @@ package com.jpstechno.edumate_backend.modeles.dto;
 
 import java.util.List;
 
-import com.jpstechno.edumate_backend.modeles.UtilisateursType;
 import com.jpstechno.edumate_backend.modeles.enumerations.RoleUtilisateurs;
 
 import lombok.AllArgsConstructor;

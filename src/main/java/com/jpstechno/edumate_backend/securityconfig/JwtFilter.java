@@ -1,14 +1,20 @@
 package com.jpstechno.edumate_backend.securityconfig;
 
 import java.io.IOException;
+import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.jpstechno.edumate_backend.modeles.enumerations.RoleUtilisateurs;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,6 +36,8 @@ public class JwtFilter extends OncePerRequestFilter {
     // private final MyUserDetailsService userDetailsService;
     private final ApplicationContext context;
 
+    private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -50,7 +58,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // verifier si authenticationHeader existe et recuperer le token ainsi que le
         // username
-        if (authenticationHeader != null && authenticationHeader.startsWith("Bearer")) {
+        if (authenticationHeader != null && authenticationHeader.startsWith("Bearer ")) {
             token = authenticationHeader.substring(7);
             userName = jwtService.getUsernameFromToken(token);
         }
@@ -63,11 +71,23 @@ public class JwtFilter extends OncePerRequestFilter {
             UserDetails userDetails = context.getBean(MyUserDetailsService.class).loadUserByUsername(userName);
 
             if (jwtService.isTokenValide(token, userDetails)) {
+                // get roles from token
+                List<RoleUtilisateurs> roles = jwtService.getUserRoleFromToken(token);
+
+                // get the list of grantedAuthorities
+                List<SimpleGrantedAuthority> authorities = roles.stream()
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name())).toList();
+
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
                         null,
-                        userDetails.getAuthorities());
+                        authorities);
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                logger.info(userName);
+
+                System.out.println(" liste authorities est: "
+                        + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
 
             }
 

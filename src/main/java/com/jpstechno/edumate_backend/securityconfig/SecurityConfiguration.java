@@ -17,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -25,13 +26,22 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-    private final List<String> listeUrlAutorise = List.of("http://localhost:5173",
-            "https://edumate-frontend.onrender.com");
-    private final List<String> listeHttpMethodeAccepte = List.of("GET", "DELETE", "PUT", "POST", "OPTIONS");
-    private final List<String> listeEnteteAutorisee = List.of("Authorization", "Content-Type");
+    /*
+     * private final List<String> listeUrlAutorise =
+     * List.of("http://localhost:5173",
+     * "https://edumate-frontend.onrender.com");
+     * private final List<String> listeHttpMethodeAccepte = List.of("GET", "DELETE",
+     * "PUT", "POST", "OPTIONS");
+     * private final List<String> listeEnteteAutorisee = List.of("Authorization",
+     * "Content-Type");
+     * 
+     */
 
     @Autowired
     private MyUserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtFilter jwtFilter;
 
     @Bean
     public CorsConfigurationSource corsConfig() {
@@ -72,7 +82,6 @@ public class SecurityConfiguration {
         http
                 .csrf((customCsrf) -> customCsrf.disable())
                 .cors(Customizer.withDefaults())
-                // .addFilterBefore(null, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((request) -> request
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -84,9 +93,11 @@ public class SecurityConfiguration {
                                 "/enumerations/**",
                                 "/utilisateurs/new_user/**",
                                 "/classes/listerClasses/**",
-                                "/anneeScolaires/lister/**")
+                                "/anneeScolaires/lister/**",
+                                "/etudiants/enroler_ancien_etudiant/**")
                         .permitAll()
                         .anyRequest().authenticated())
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable());
 

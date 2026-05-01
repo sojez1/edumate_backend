@@ -21,7 +21,7 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 
-    int dureeToken = 5 * 60 * 1000; // 5 mn convertie en millisecond
+    int dureeToken = 120 * 60 * 1000; // 15 mn convertie en millisecond / 120 mn for dev
     int dureeRefreshToken = 3 * 24 * 60 * 60 * 1000; // 3 jrs en millisecond
     private final String secret = "abcdgcgncbccvxvxxMvbvbbBbbnbxvcvbcvcghfhgbgdg";
     // private Utilisateurs utilisateur;
@@ -78,7 +78,8 @@ public class JwtService {
     }
 
     public List<RoleUtilisateurs> getUserRoleFromToken(String token) {
-        return (List<RoleUtilisateurs>) this.extractClaimsFromToken(token).get("roles");
+        List<?> roles = (List<?>) this.extractClaimsFromToken(token).get("roles");
+        return roles.stream().map(role -> RoleUtilisateurs.valueOf(role.toString())).toList();
     }
 
     private boolean isTokenExpired(String token) {

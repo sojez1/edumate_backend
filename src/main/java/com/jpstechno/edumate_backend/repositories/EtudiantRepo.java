@@ -1,9 +1,13 @@
 package com.jpstechno.edumate_backend.repositories;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.jpstechno.edumate_backend.modeles.Etudiants;
 
 public interface EtudiantRepo extends JpaRepository<Etudiants, Long> {
+
+    Optional<Etudiants> findByUsername(String username);
 
 }

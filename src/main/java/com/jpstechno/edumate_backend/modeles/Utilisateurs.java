@@ -1,5 +1,6 @@
 package com.jpstechno.edumate_backend.modeles;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.NaturalId;
@@ -7,6 +8,8 @@ import org.hibernate.annotations.NaturalId;
 import com.jpstechno.edumate_backend.modeles.enumerations.RoleUtilisateurs;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,47 +19,62 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 @Entity
-@NoArgsConstructor
-@SuperBuilder
 @Getter
 @Setter
-@Inheritance(strategy = jakarta.persistence.InheritanceType.TABLE_PER_CLASS)
-public class Utilisateurs {
+@Inheritance(strategy = jakarta.persistence.InheritanceType.JOINED)
+@DiscriminatorColumn(name = "UserType", discriminatorType = DiscriminatorType.STRING)
+public abstract class Utilisateurs {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    protected Long id;
+    private Long id;
 
     @NaturalId
-    protected String username; // id for login
+    private String username; // id for login
 
-    protected String nom;
+    private String nom;
 
-    @Column(nullable = false)
-    protected String prenoms;
+    private String prenoms;
 
     @NaturalId(mutable = true)
-    protected String email;
+    private String email;
 
-    @Builder.Default
-    protected boolean valideEmail = false;
+    private boolean valideEmail = false;
 
-    @Builder.Default
-    protected boolean actif = false;
+    private Boolean actif = false;
 
-    protected String telephone;
+    private String telephone;
 
-    protected String password;
+    private String password;
 
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = RoleUtilisateurs.class, fetch = FetchType.EAGER)
     @Column(name = "userroles")
-    protected List<RoleUtilisateurs> role;
+    private List<RoleUtilisateurs> role;
+
+    public Utilisateurs() {
+    }
+
+    public Utilisateurs(String nom, String prenoms, String username, String email,
+            String telephone, String password) {
+        this.username = username;
+        this.nom = nom;
+        this.prenoms = prenoms;
+        this.email = email;
+        this.telephone = telephone;
+        this.password = password;
+        this.valideEmail = false;
+        this.actif = false;
+        this.role = new ArrayList<>();
+    }
+
+    public Utilisateurs(Long id, String nom, String prenoms, String username, String email,
+            String telephone, String password) {
+        this(nom, prenoms, username, email, telephone, password);
+        this.id = id;
+    }
 }

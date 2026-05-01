@@ -63,7 +63,7 @@ public class UtilisateurImplementation implements UtilisateurService {
     @Override
     public Utilisateurs activateOrDesactivateUilisateur(Long id) {
         Utilisateurs usr = userRepo.findById(id).orElseThrow(() -> new RuntimeException("user id not valide"));
-        usr.setActif(!usr.isActif());
+        usr.setActif(!usr.getActif());
         return userRepo.save(usr);
     }
 
@@ -144,7 +144,6 @@ public class UtilisateurImplementation implements UtilisateurService {
             TokenUtilisateurs userToken = new TokenUtilisateurs(utilisateur.get(), token);
             tokenUtilisateurRepo.save(userToken);
             // 3- creer url comportant le token et le username
-            String chemin = "";
 
         } else {
             throw new RuntimeException("Pas d<utilisateur corres[popndant aux donnees saisies");
